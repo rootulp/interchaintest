@@ -51,6 +51,7 @@ func NewConfig(chainConfigs ...ChainConfig) Config {
 				Denominator: "3",
 			},
 			MemoPrefix: "hermes",
+			CompatMode: getCompatMode(chainCfg.Name),
 		},
 		)
 	}
@@ -86,6 +87,16 @@ func NewConfig(chainConfigs ...ChainConfig) Config {
 		},
 		Chains: chains,
 	}
+}
+
+// getCompatMode returns the CometBFT compat mode for a chain.
+// https://hermes.informal.systems/documentation/configuration/comet-compat-mode.html
+func getCompatMode(chain string) string {
+	if chain == "celestia" {
+		return "0.34"
+	}
+	// Default to the latest compat mode.
+	return "0.37"
 }
 
 type Config struct {
@@ -181,4 +192,5 @@ type Chain struct {
 	TrustingPeriod string         `toml:"trusting_period"`
 	TrustThreshold TrustThreshold `toml:"trust_threshold"`
 	MemoPrefix     string         `toml:"memo_prefix,omitempty"`
+	CompatMode     string         `toml:"compat_mode"`
 }
